@@ -70,3 +70,17 @@ map<-get_map(location='united states', zoom=4, maptype = "terrain",
              ,color='color')
 ggmap(map) + geom_point(data = airportflightcount, aes(x = longitude, y = latitude, size = origincount, colour = airline_id)) + guides(fill='legend', size=F) + scale_size(range = c(0, 6)) + scale_fill_gradient(low = "#ff0000", high = "#04ff00")
 ```
+
+```{r}
+jackson <- filter(data, origin_airport == "DTW", destination_airport == "ORD")
+
+collis <- jackson %>%
+            group_by(airline_id) %>%
+            summarize(taxiout = mean(taxi_out, na.rm = T))
+
+baseplot <- ggplot(data=collis, aes(x=airline_id, y=taxiout))
+
+baseplot + geom_bar(stat = "identity")
+```
+
+
