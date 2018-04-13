@@ -1,0 +1,36 @@
+---
+title: "Datathon Analysis"
+author: "Jackson Collis, Lily Lu, Eric Seo, Johnny Young"
+date: "Apr 13, 2018"
+output: html_document
+---
+
+# Part I - Topic Question
+
+What is the question that your team set out to answer? Why is it an
+important question? What datasets did you use to answer your question?
+
+Question: how do low cost disrupters perform against industry incumbents, and what are implications for consumers and the industry?
+
+This is an extremely important question. In the advent of sites like TripAdvisor and Google Flights, airline tickets are becoming commoditized. How lower-cost providers (Spirit, Frontier) compete against more powerful firms with higher prices and "higher" quality (Delta, United) has important implications for how consumers make purchasing decisions and for how firms differentiate in the marketplace.
+
+Our team utilized the following datasets to answer our question:
+
+*fares
+*flight_traffic
+
+
+# Part II - NonTechnical
+
+Exposition - What were your key findings, and why are they important? It
+is crucial that you communicate your insights clearly and substantiate them with sound
+logical analysis. Summary statistics and visualizations are also encouraged.
+
+
+# Part III - Technical Exposition
+
+What was your datadriven methodology/approach towards answering the questions?
+Describe your data manipulation and exploration process.
+Again, use of visualizations is highly encouraged.
+
+
