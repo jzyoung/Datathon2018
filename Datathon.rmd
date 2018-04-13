@@ -67,7 +67,7 @@ airportflightcount <- data %>% group_by(origin_airport, airline_id) %>% summariz
 airportflightcount <- merge(airportflightcount, airport, by.x = 'origin_airport', by.y = 'airport_id')
 
 map<-get_map(location='united states', zoom=4, maptype = "terrain", color='color')
-ggmap(map) + geom_point(data = airportflightcount, aes(x = longitude, y = latitude, size = airportflightcount, colour = airline_id)) + guides(fill='legend', size=F) + scale_size(range = c(0, 6)) + scale_fill_gradient(low = "#ff0000", high = "#04ff00")
+ggmap(map) + geom_point(data = airportflightcount, aes(x = longitude, y = latitude, size = origincount, colour = airline_id)) + guides(fill='legend', size=F) + scale_size(range = c(0, 6)) + scale_fill_gradient(low = "#ff0000", high = "#04ff00")
 
 
 data$airline_type <- as.factor(ifelse(data$airline_id %in% major, "Major", 
