@@ -66,8 +66,7 @@ data <- merge(data, airport, by.x = 'origin_airport', by.y = 'airport_id')
 airportflightcount <- data %>% group_by(origin_airport, airline_id) %>% summarize(origincount = n())
 airportflightcount <- merge(airportflightcount, airport, by.x = 'origin_airport', by.y = 'airport_id')
 
-map<-get_map(location='united states', zoom=4, maptype = "terrain",
-             ,color='color')
+map<-get_map(location='united states', zoom=4, maptype = "terrain", color='color')
 ggmap(map) + geom_point(data = airportflightcount, aes(x = longitude, y = latitude, size = origincount, colour = airline_id)) + guides(fill='legend', size=F) + scale_size(range = c(0, 6)) + scale_fill_gradient(low = "#ff0000", high = "#04ff00")
 ```
 
@@ -83,4 +82,34 @@ baseplot <- ggplot(data=collis, aes(x=airline_id, y=taxiout))
 baseplot + geom_bar(stat = "identity")
 ```
 
+```{r}
+kmeansdata <- data
+kmeansdata$departure_difference <- as.numeric(kmeansdata$scheduled_departure) - as.numeric(kmeansdata$actual_departure)
+
+kmeansdata$quarter <- ifelse(kmeansdata$month <= 3, 1, ifelse(kmeansdata$month <= 6, 2, ifelse(kmeansdata$month <= 9, 3, 4)))
+
+kmeansdata$elapsed_difference <- kmeansdata$scheduled_elapsed - kmeansdata$actual_elapsed
+kmeansdata[c('scheduled_departure', 'actual_departure', 'wheels_off', 'wheels_on', 'scheduled_arrival', 'actual_arrival', 'scheduled_elapsed', 'actual_elapsed', 'latitude.y', 'longitude.y', 'distance', 'taxi_out', 'taxi_in', 'cancelled', 'diverted', 'year','month','day', 'latitude.x', 'longitude.x')] <- NULL
+
+kmeansdata$airline_delay[is.na(kmeansdata$airline_delay)] <- 0
+kmeansdata$weather_delay[is.na(kmeansdata$weather_delay)] <- 0
+kmeansdata$air_system_delay[is.na(kmeansdata$air_system_delay)] <- 0
+kmeansdata$security_delay[is.na(kmeansdata$security_delay)] <- 0
+kmeansdata$aircraft_delay[is.na(kmeansdata$aircraft_delay)] <- 0
+kmeansdata$departure_difference[is.na(kmeansdata$departure_difference)] <- 0
+kmeansdata$elapsed_difference[is.na(kmeansdata$elapsed_difference)] <- 0
+
+
+
+faresummary <- fares[c(1:4, 256, 257)]
+kmeandsdata <- merge(kmeansdata, faresummary, by = c('quarter', 'origin_airport', 'destination_airport', 'airline_id'))
+str(kmeansdata)
+
+numericdata <- lapply(kmeansdata, is.numeric)
+kmeansdataz <- as.data.frame(lapply(kmeansdata[c(-1,-2,-3)],scale))
+airline_clusters <- kmeans(kmeansdataz, 3)
+airline_clusters$size
+airline_clusters$centers
+
+```
 
