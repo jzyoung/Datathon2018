@@ -1,0 +1,7 @@
+Ross_Datathon_Files*
+.Rproj.user
+.Rhistory
+*.Rproj
+.DS_Store
+.RData
+*.csv
