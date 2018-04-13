@@ -26,6 +26,16 @@ Exposition - What were your key findings, and why are they important? It
 is crucial that you communicate your insights clearly and substantiate them with sound
 logical analysis. Summary statistics and visualizations are also encouraged.
 
+* Key Finding #1: With increased industry consolidation, it is becoming increasingly important for airlines to defend home markets and wage entry into emerging markets
+
+With the recent merger between American Airlines and US Airways, the industry has become even more consolidated. Many flight 
+
+* Key Finding #2: Given ticket commoditization, upscale airlines will need to find new ways to differentiate with digital technology and improved in-flight experience
+
+Via the following graph, major airlines appear to have relatively similar average prices.
+
+To successfully premium price in the future, airlines that choose to differentiate based on quality will likely have to make strategic changes in their operations. Perhaps offering fewer seats, but much more luxurious seating options is one idea.  Also further developing in-flight entertainment and adding more technological features could assist.
+
 
 # Part III - Technical Exposition
 
@@ -33,4 +43,14 @@ What was your datadriven methodology/approach towards answering the questions?
 Describe your data manipulation and exploration process.
 Again, use of visualizations is highly encouraged.
 
+Our approach: illuminate differences in airlines through visualization of performance at individual routes
 
+Data Manipulation/Exploration Process:
+
+* Group airlines into categories (Budget, Major, etc.)
+* Calculate average price for each route using the fare data
+* Further grouped to set up kmeans clustering and RShiny application development
+
+To better answer our question, we developed a RShiny application to compare airline performance over various routes. Please visit the link to view the publication online.
+
+This application has several purposes. Customers can compare performance for their desired route, to get a better idea if the higher fares they are paying translate to fewer delays and shorter flights. Airline executes can see how they are comparing against they competitors over certain routes, which again is important for geographical competition.
