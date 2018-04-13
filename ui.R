@@ -18,7 +18,7 @@ fluidPage(
         submitButton()
       ),
       mainPanel(
-        "If this panel is empty, that means the data is loading. Thank you for your patience!",
+        "If this panel is empty, that means there is no data for the airports you've chosen. Thank you for your patience!",
         img(src='emoji.png', align = "center"),
         # "Please be patient while the decision tree results generate",
         # verbatimTextOutput("myData")

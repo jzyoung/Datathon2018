@@ -2,11 +2,15 @@
 title: "Datathon"
 author: "Jackson Collis, Lily Lu, Eric Seo, Johnny Young"
 date: "Apr 13, 2018"
-output: html_document
+output: 
+    html_document:
+        code_folding: hide
 ---
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
+knitr::opts_chunk$set(cache=TRUE)
+
 ```
 
 ```{r}
@@ -16,17 +20,36 @@ library(magrittr)
 library(ggplot2)
 library(ggmap)
 ```
+# Part I - Topic Question
+
+What is the question that your team set out to answer? Why is it an
+important question? What datasets did you use to answer your question?
+
+Question: how do low cost disrupters perform against industry incumbents, and what are implications for consumers and the industry?
+
+This is an extremely important question. In the advent of sites like TripAdvisor and Google Flights, airline tickets are becoming commoditized. How lower-cost providers (Spirit, Frontier) compete against more powerful firms with higher prices and "higher" quality (Delta, United) has important implications for how consumers make purchasing decisions and for how firms differentiate in the marketplace.
+
+Our team utilized the following datasets to answer our question:
+
+* fares
+* flight_traffic
+
+# Part II - NonTechnical
+
+Exposition - What were your key findings, and why are they important? It
+is crucial that you communicate your insights clearly and substantiate them with sound
+logical analysis. Summary statistics and visualizations are also encouraged.
 
 ```{r}
 # Import Main Data
-data <- read.csv('PRIMARY_flight_traffic.csv')
+data <- read.csv('Ross_Datathon_Files/PRIMARY_flight_traffic.csv')
 
 # Clean Data
 data$diverted %<>% as.factor()
 data$cancelled %<>% as.factor()
 
 # Fare data 
-fares <- read.csv('fares.csv')
+fares <- read.csv('Ross_Datathon_Files/fares.csv')
 
 # Clean Data
 major <- c("UA", "AA", "DL", "US", "AS")
@@ -45,17 +68,24 @@ fares$avgPrice <- apply(fares[,6:255],1, function(x){sum(x*costs)/sum(x)})
 # head(fares$avgPrice)
 
 # Stock data
-stock <- read.csv('stock_prices.csv')
+stock <- read.csv('Ross_Datathon_Files/stock_prices.csv')
 
 # Airport data
-airport <- read.csv('airports.csv')
+airport <- read.csv('Ross_Datathon_Files/airports.csv')
 
 # Event data
-events <- read.csv('events_US.csv')
+events <- read.csv('Ross_Datathon_Files/events_US.csv')
 
 # Weather data
-weather <- read.csv('weather.csv')
+weather <- read.csv('Ross_Datathon_Files/weather.csv')
 ```
+**Key Finding #1**: With increased industry consolidation, it is becoming increasingly important for airlines to defend home markets and wage entry into emerging markets
+
+With the recent merger between American Airlines and US Airways, the industry has become even more consolidated. Many flight 
+
+Initially with our data, we wanted to explore geographical differences across airlines operating in the US. In order to do this, we created a visual plot of the counts of flight data we had in the US, in order to compare 'high density' airports across all airlines in the US. Then by compaing the data across the categories that we assigned with different airlines. Through this plot, we could see visually see how different industry players focus on specific airports across the country. We saw that both budget and major airlines seem to have a large presence across major regional hubs in the US. Regional airlines seem to be more spread out to service local fliers across less densely populated areas, which makes sense considering their area of focus.
+
+Budget airlines compete in the market by taking away customers from major players with the lure of cheaper flights and prices, thus directly competing in the same airports as larger players, while regional players make most of their revenue by filling a gap in the market supply and demand through local travelers looking for transportation across the country.
 
 ```{r}
 airport$airport_name <- NULL
@@ -80,17 +110,12 @@ airportflightcountbytype <- merge(airportflightcountbytype, airport, by.x = 'ori
 ggmap(map) + geom_point(data = airportflightcountbytype, aes(x = longitude, y = latitude, size = origincount, colour = airline_type)) + guides(fill='legend', size=F) + scale_size(range = c(0, 6)) + scale_fill_gradient(low = "#ff0000", high = "#04ff00") + facet_wrap(~airline_type)
 ```
 
-```{r}
-jackson <- filter(data, origin_airport == "DTW", destination_airport == "ORD")
+**Key Finding #2**: Given ticket commoditization, upscale airlines will need to find new ways to differentiate with digital technology and improved in-flight experience
 
-collis <- jackson %>%
-            group_by(airline_id) %>%
-            summarize(taxiout = mean(taxi_out, na.rm = T))
+Via the following graph, major airlines appear to have relatively similar average prices.
 
-baseplot <- ggplot(data=collis, aes(x=airline_id, y=taxiout))
-
-baseplot + geom_bar(stat = "identity")
-```
+To successfully premium price in the future, airlines that choose to differentiate based on quality will likely have to make strategic changes in their operations. Perhaps offering fewer seats, but much more luxurious seating options is one idea.  Also further developing in-flight entertainment and adding more technological features could assist.
+This graph shows the average ticket price (per flight route) for budget, major, and regional airlines. Like expected, major airlines (e.g. Delta, American Airlines, United) have the highest average ticket prices while regional airlines (e.g. Skywest, Hawaiian) have the sparsest range of average ticket prices. The most important insight gained from this graph is that although major airlines have the highest prices, budget airlines are not remarkably lower than those prices. This shows that the price difference between major and budget airlines may not be as significant as consumers perceive.
 
 ```{r}
 kmeansdata <- data
@@ -117,18 +142,35 @@ faresummary <- fares[c(1:4, 256, 257)]
 kmeansdata <- merge(kmeansdata, faresummary, by = c('quarter', 'origin_airport', 'destination_airport', 'airline_id'))
 str(kmeansdata)
 
-numericdata <- lapply(kmeansdata, is.numeric)
-kmeansdataz <- as.data.frame(lapply(kmeansdata[c(-1,-2,-3, -4, -12, -14)],scale))
-airline_clusters <- kmeans(kmeansdataz, 3)
-airline_clusters$size
-airline_clusters$centers
+# numericdata <- lapply(kmeansdata, is.numeric)
+# kmeansdataz <- as.data.frame(lapply(kmeansdata[c(-1,-2,-3, -4, -12, -14)],scale))
+# airline_clusters <- kmeans(kmeansdataz, 3)
+# airline_clusters$size
+# airline_clusters$centers
 
-```
-```{r}
 graphdata <- data
 graphdata$quarter <- ifelse(graphdata$month <= 3, 1, ifelse(graphdata$month <= 6, 2, ifelse(data$month <= 9, 3, 4)))
 
-airline_type_vs_price <- ggplot(data = kmeansdata, aes(x=airline_type)) + geom_jitter(aes(y = avgPrice,  colour = airline_type),  size=1, alpha=0.01) + labs(title="Average Ticket Price By Airline Type",  x= "Airline Type", y="Average Price", fill="Airline Type") + theme(legend.position="none")
+airline_type_vs_price <- ggplot(data = kmeansdata, aes(x=airline_type.y)) + geom_jitter(aes(y = avgPrice,  colour = airline_type.y),  size=1, alpha=0.01) + labs(title="Average Ticket Price By Airline Type",  x= "Airline Type", y="Average Price", fill="Airline Type") + theme(legend.position="none")
 airline_type_vs_price
 ```
+# Part III - Technical Exposition
+
+What was your datadriven methodology/approach towards answering the questions?
+Describe your data manipulation and exploration process.
+Again, use of visualizations is highly encouraged.
+
+Our approach: illuminate differences in airlines through visualization of performance at individual routes
+
+Data Manipulation/Exploration Process:
+
+* Group airlines into categories (Budget, Major, etc.)
+* Calculate average price for each route using the fare data
+* Further grouped to set up kmeans clustering and RShiny application development
+
+To better answer our question, we developed a [RShiny application](https://datathon2018team17.shinyapps.io/datathon2018/) to compare airline performance over various routes. Please visit the link to view the publication online.
+
+This application has several purposes. Customers can compare performance for their desired route, to get a better idea if the higher fares they are paying translate to fewer delays and shorter flights. Airline executes can see how they are comparing against they competitors over certain routes, which again is important for geographical competition. 
+
+
 
