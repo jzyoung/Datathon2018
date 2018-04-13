@@ -27,8 +27,18 @@ data$cancelled %<>% as.factor()
 
 # Fare data 
 fares <- read.csv('fares.csv')
-fares$airline_type <- as.factor(ifelse(fares$airline_id == "UA" | fares$airline_id == "AA" | fares$airline_id == "DL" | fares$airline_id == "US" | fares$airline_id == "AS", "Major", ifelse(fares$airline_id == "F9" | fares$airline_id == "B6" | fares$airline_id == "NK" | fares$airline_id == "WN", "Budget", ifelse(fares$airline_id == "OO" | fares$airline_id == "EV" | fares$airline_id == "HA" | fares$airline_id == "MQ" | fares$airline_id == "VX", "Regional", NA)) ))
 
+# Clean Data
+major <- c("UA", "AA", "DL", "US", "AS")
+budget <- c("F9", "B6", "NK", "WN")
+regional <- c("OO", "EV", "HA", "MQ", "VX")
+fares$airline_type <- as.factor(ifelse(fares$airline_id %in% major, "Major", 
+    ifelse(fares$airline_id %in% budget, "Budget", 
+        ifelse(fares$airline_id %in% regional, "Regional", NA)) ))
+
+ airlines <- c("AA" ,"AS" ,"B6" ,"DL" ,"EV" ,"F9" ,"HA" ,"NK" ,"OO" ,"UA" ,"VX" ,"WN")
+fares <- fares[fares$airline_id %in% airlines, ]
+summary(fares$airline_type)
 
 # Stock data
 stock <- read.csv('stock_prices.csv')
