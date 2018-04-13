@@ -28,17 +28,18 @@ function(input, output) {
     dep <- as.character(airports[airports$airport_name==input$DepAP,]$airport_id)
     dest <- as.character(airports[airports$airport_name==input$ArrAP,]$airport_id)
     
-    if(input$Var == "elapsed"){
+    if(input$Var == "Elapsed"){
       p <- filter(data, origin_airport == dep, destination_airport == dest) %>%
         group_by(airline_id) %>%
         summarize(elapsed = mean(actual_elapsed, na.rm = T))
 
       baseplot <- ggplot(data=p, aes(x=airline_id, y=elapsed))
 
-      baseplot + geom_bar(stat = "identity", fill = "#bc20b7")
+      baseplot + geom_bar(stat = "identity", fill = "#bc20b7") +
+        labs(title = "Elapsed Time of Flight by Airline", x = "Airline", y = "Elapsed Time of Flight")
     }
 
-    else if(input$Var == "fares"){
+    else if(input$Var == "Fares"){
       #fares - order and color
 
       p <- filter(fares, origin_airport == dep, destination_airport == dest) %>%
@@ -46,10 +47,11 @@ function(input, output) {
         summarize(avgFare = mean(avgPrice, na.rm = T))
 
       baseplot2 <- ggplot(data = p, aes(x = airline_id, y = avgFare))
-      baseplot2 + geom_bar(stat = "identity", fill = "#28c122")
+      baseplot2 + geom_bar(stat = "identity", fill = "#28c122") +
+        labs(title = "Fares by Airline", x = "Airline", y = "Fare")
     }
 
-    else if(input$Var == "delay"){
+    else if(input$Var == "Delay"){
       data$airline_delay <- ifelse(is.na(data$airline_delay), 0, data$airline_delay)
       data$weather_delay <- ifelse(is.na(data$weather_delay), 0, data$weather_delay)
       data$air_system_delay <- ifelse(is.na(data$air_system_delay), 0, data$air_system_delay)
@@ -63,7 +65,8 @@ function(input, output) {
 
       baseplot <- ggplot(data=p, aes(x=airline_id, y=average_delay))
 
-      baseplot + geom_bar(stat = "identity", fill = "#d64d3e") 
+      baseplot + geom_bar(stat = "identity", fill = "#d64d3e") +
+        labs(title = "Average Delay by Airline", x = "Airline", y = "Average Delay")
     }
 
 
