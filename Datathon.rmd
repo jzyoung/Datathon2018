@@ -79,6 +79,19 @@ airportflightcountbytype <- merge(airportflightcountbytype, airport, by.x = 'ori
 
 ggmap(map) + geom_point(data = airportflightcountbytype, aes(x = longitude, y = latitude, size = origincount, colour = airline_type)) + guides(fill='legend', size=F) + scale_size(range = c(0, 6)) + scale_fill_gradient(low = "#ff0000", high = "#04ff00") + facet_wrap(~airline_type)
 ```
+
+```{r}
+jackson <- filter(data, origin_airport == "DTW", destination_airport == "ORD")
+
+collis <- jackson %>%
+            group_by(airline_id) %>%
+            summarize(taxiout = mean(taxi_out, na.rm = T))
+
+baseplot <- ggplot(data=collis, aes(x=airline_id, y=taxiout))
+
+baseplot + geom_bar(stat = "identity")
+```
+
 ```{r}
 kmeansdata <- data
 kmeansdata$departure_difference <- as.numeric(kmeansdata$scheduled_departure) - as.numeric(kmeansdata$actual_departure)
