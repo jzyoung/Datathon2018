@@ -14,6 +14,7 @@ knitr::opts_chunk$set(echo = TRUE)
 library(dplyr)
 library(magrittr)
 library(ggplot2)
+library(ggmap)
 ```
 
 ```{r}
@@ -40,4 +41,18 @@ events <- read.csv('events_US.csv')
 
 # Weather data
 weather <- read.csv('weather.csv')
+```
+
+```{r}
+airport$airport_name <- NULL
+airport$city <- NULL
+airport$state <- NULL
+data <- merge(data, airport, by.x = 'origin_airport', by.y = 'airport_id')
+
+airportflightcount <- data %>% group_by(origin_airport, airline_id) %>% summarize(origincount = n())
+airportflightcount <- merge(airportflightcount, airport, by.x = 'origin_airport', by.y = 'airport_id')
+
+map<-get_map(location='united states', zoom=4, maptype = "terrain",
+             ,color='color')
+ggmap(map) + geom_point(data = airportflightcount, aes(x = longitude, y = latitude, size = origincount, colour = airline_id)) + guides(fill='legend', size=F) + scale_size(range = c(0, 6)) + scale_fill_gradient(low = "#ff0000", high = "#04ff00")
 ```
